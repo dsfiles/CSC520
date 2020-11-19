@@ -13,4 +13,4 @@ _start:
 
 section .data
 	msg db "hello world!", 0x0a
-	lenequ $ - msg
+	len equ $ - msg
