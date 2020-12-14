@@ -1,18 +1,18 @@
 /*
  * This program simulates the producer-consumer problem using POSIX mutex and semaphore.
- * To make the program output more interesting, here are some revisions:
- * There are 4 producers, each produces 6 items; 6 consumers, and each consumes 4 items.
+ * 
  * buffer size remains the same
  */
+
 #include <pthread.h>
 #include <semaphore.h>
 #include <stdlib.h>
 #include <stdio.h>
 #define BUFFSIZE 5
-sem_t empty;
-sem_t full;
+sem_t empty; //semaphore empty
+sem_t full;  //semaphore full
 int buffer[BUFFSIZE];
-pthread_mutex_t mutex;
+pthread_mutex_t mutex; //mutex lock
 int in = 0;
 int out = 0;
 int item = 0;
@@ -21,14 +21,14 @@ void* producer(void* p)
 {
     for (int i = 0; i < 6; i++)
     {
-        sem_wait(&empty);
-        pthread_mutex_lock(&mutex);
-        buffer[in] = item;
+        sem_wait(&empty); //wait operation on semaphore empty
+        pthread_mutex_lock(&mutex); //lock mutex
+        buffer[in] = item; //insert the item to the buffer
         item = item + 1;
         printf("producer %d: insert item %d at\tbuffer[%d]\n", *((int*)p), buffer[in], in);
         in = (in+1) % BUFFSIZE;
-pthread_mutex_unlock(&mutex);
-sem_post(&full);
+        pthread_mutex_unlock(&mutex); //unlock mutex
+        sem_post(&full); //signal operation on emaphore full
     }
 }
 
@@ -41,8 +41,8 @@ void* consumer(void* c)
         int item_removed = buffer[out];
         printf("consumer %d: remove item %d from buffer[%d]\n", *((int*)c), item_removed, out);
         out = (out+1) % BUFFSIZE;
-pthread_mutex_unlock(&mutex);
-sem_post(&empty);
+        pthread_mutex_unlock(&mutex);
+        sem_post(&empty);
     }
 }
 
