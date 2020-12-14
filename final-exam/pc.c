@@ -1,7 +1,5 @@
 /*
- * This program simulates the producer-consumer problem using POSIX mutex and semaphore.
- * 
- * buffer size remains the same
+ * This program simulates the producer-consumer problem using POSIX mutex and semaphore 
  */
 
 #include <pthread.h>
