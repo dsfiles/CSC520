@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #define BUFFSIZE 5
+
 sem_t empty; //semaphore empty
 sem_t full;  //semaphore full
 int buffer[BUFFSIZE];
@@ -48,26 +49,25 @@ void* consumer(void* c)
 
 int main()
 {
-    pthread_t p[4], c[6];
-    pthread_mutex_init(&mutex, NULL);
-    sem_init(&empty, 0, BUFFSIZE);
-    sem_init(&full, 0, 0);
-    int id;
-    int a[6] = { 1, 2, 3, 4, 5, 6 }; //Keep track of the producer and consumer
-    for (int i = 0; i < 4; i++)
-    { //create 4 producers
+    pthread_t p[4], c[6]; ////array p[4] and c[6] are used to label producers and consumers, respectively
+    pthread_mutex_init(&mutex, NULL); //initialize mutex to unlocked
+    sem_init(&empty, 0, BUFFSIZE); //initialize semaphore empty to value of BUFFSIZE, which is 5
+    sem_init(&full, 0, 0); //initialize semaphore full to zero
+    int a[6] = { 1, 2, 3, 4, 5, 6 }; //keep track of the producer and consumer threads numbers
+    for (int i = 0; i < 4; i++) 
+    { //create producers
         pthread_create(&p[i], NULL, (void*)producer, (void*)&a[i]);
     }
     for (int i = 0; i < 6; i++)
-    { //create 6 consumers
+    { //create consumers
         pthread_create(&c[i], NULL, (void*)consumer, (void*)&a[i]);
     }
     for (int i = 0; i < 4; i++)
-    {
+    {  //main thread waits for the newly created thread to finish
         pthread_join(p[i], NULL);
     }
     for (int i = 0; i < 6; i++)
-    {
+    {  //main thread waits for the newly created thread to finish
         pthread_join(c[i], NULL);
     }
     pthread_mutex_destroy(&mutex);
